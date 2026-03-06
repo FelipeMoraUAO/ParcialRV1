@@ -1,58 +1,105 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
-public class move : MonoBehaviour 
-{
-    public float speed = 5f;
-    public float jumpHeight = 2f;
-    public float gravity = -15f;
 
-    private CharacterController controller;
-    private Vector2 moveInput;
-    private Vector3 velocity; 
+public class move : MonoBehaviour
+{
+    public float movementSpeed = 5f;
+    public float gravity = -15f;
+    public float jumpForce = 2f;
+
+    public Transform cameraTransform; 
+    public float sensibility = 0.2f;
+    public float minLimit = -80f;
+    public float maxLimit = 80f;
+    public float gamepadSensibility = 100f;
+
+    private float currentRotationY;
+    private CharacterController characterController;
+    private PlayerInput playerInput; 
+
+    private Vector2 movement;
+    private Vector2 look;
+    private Vector3 velocity;
     private bool isGrounded;
 
-    void Awake()
+    public string colorJugador;
+    private void Awake()
     {
-        controller = GetComponent<CharacterController>();
+        characterController = GetComponent<CharacterController>();
+        playerInput = GetComponent<PlayerInput>();
     }
 
-    
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
     public void OnMove(InputValue value)
     {
-        moveInput = value.Get<Vector2>();
+        movement = value.Get<Vector2>();
     }
 
-    public void OnJump()
+    public void OnLook(InputValue value)
     {
-        if (isGrounded)
+        look = value.Get<Vector2>();
+    }
+
+    public void OnJump(InputValue value)
+    {
+        if (value.isPressed && isGrounded)
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
         }
     }
 
-    void Update()
+    private void Update()
     {
-        //Verificar si toca el suelo
-        isGrounded = controller.isGrounded;
+        Movement();
+        Look();
+    }
+
+    private void Look()
+    {
+        if (cameraTransform == null)
+        {
+            return;
+        }
+
+        float sX, sY;
+
+        
+        if (playerInput.currentControlScheme == "Gamepad")
+        {
+            
+            sX = look.x * gamepadSensibility * Time.deltaTime;
+            sY = look.y * gamepadSensibility * Time.deltaTime;
+        }
+        else
+        {
+            
+            sX = look.x * sensibility;
+            sY = look.y * sensibility;
+        }
+
+        currentRotationY = Mathf.Clamp(currentRotationY - sY, minLimit, maxLimit);
+        cameraTransform.localRotation = Quaternion.Euler(currentRotationY, 0, 0);
+
+        transform.Rotate(Vector3.up * sX);
+    }
+
+    private void Movement()
+    {
+        isGrounded = characterController.isGrounded;
+
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f; // Mantiene al jugador pegado al suelo
+            velocity.y = -2f;
         }
 
-        //Movimiento Horizontal
-        Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
-        controller.Move(move * speed * Time.deltaTime);
+        Vector3 move = transform.right * movement.x + transform.forward * movement.y;
+        characterController.Move(move * movementSpeed * Time.deltaTime);
 
-        if (move != Vector3.zero)
-        {
-            transform.forward = move;
-        }
-
-        //Aplicar Gravedad
         velocity.y += gravity * Time.deltaTime;
-
-        //Movimiento Vertical
-        controller.Move(velocity * Time.deltaTime);
+        characterController.Move(velocity * Time.deltaTime);
     }
 }

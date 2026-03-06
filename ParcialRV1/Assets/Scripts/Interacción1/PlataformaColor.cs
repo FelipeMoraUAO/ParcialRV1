@@ -15,6 +15,7 @@ public class PlataformaColor : MonoBehaviour
         {
             jugadorEncima = true;
             jugadorColor = player.colorJugador;
+            Debug.Log("Jugador entró en plataforma " + gameObject.name + " con color " + jugadorColor);
         }
     }
 
