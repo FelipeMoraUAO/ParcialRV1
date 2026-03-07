@@ -6,13 +6,12 @@ public class CollectibleObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        PlayerRole player = other.GetComponent<PlayerRole>();
-
+        PlayerRole360 player = other.GetComponent<PlayerRole360>();
         if (player != null)
         {
             if (player.playerID == correctPlayerID)
             {
-                GameManager.instance.ObjectCollected();
+                GameMang360.instance.ObjectCollected();
                 Destroy(gameObject);
             }
         }

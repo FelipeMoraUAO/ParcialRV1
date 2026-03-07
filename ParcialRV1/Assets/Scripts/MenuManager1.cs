@@ -3,13 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager1 : MonoBehaviour
 {
-    public GameObject panelMenu;
-    
-
-    // PLAY
-    public void PlayGame()
+    public void StartGame()
     {
-        SceneManager.LoadScene(1); // escena 2 del juego
+        SceneManager.LoadScene("HJD_FP_SampleScene_01");
     }
-
 }

@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameMang360 : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameMang360 instance;
 
     public GameObject portalPanel;
 
