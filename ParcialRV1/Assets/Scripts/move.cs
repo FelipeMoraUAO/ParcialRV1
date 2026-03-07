@@ -7,7 +7,7 @@ public class move : MonoBehaviour
     public float gravity = -15f;
     public float jumpForce = 2f;
 
-    public Transform cameraTransform; 
+    public Transform cameraTransform;
     public float sensibility = 0.2f;
     public float minLimit = -80f;
     public float maxLimit = 80f;
@@ -15,7 +15,7 @@ public class move : MonoBehaviour
 
     private float currentRotationY;
     private CharacterController characterController;
-    private PlayerInput playerInput; 
+    private PlayerInput playerInput;
 
     private Vector2 movement;
     private Vector2 look;
@@ -67,16 +67,16 @@ public class move : MonoBehaviour
 
         float sX, sY;
 
-        
+
         if (playerInput.currentControlScheme == "Gamepad")
         {
-            
+
             sX = look.x * gamepadSensibility * Time.deltaTime;
             sY = look.y * gamepadSensibility * Time.deltaTime;
         }
         else
         {
-            
+
             sX = look.x * sensibility;
             sY = look.y * sensibility;
         }
